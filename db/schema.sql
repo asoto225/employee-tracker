@@ -5,23 +5,26 @@ USE company_db;
 
 CREATE TABLE departments (
     id INT NOT NULL AUTO_INCREMENT,
-    department_id VARCHAR(30) NOT NULL,
+    department_name VARCHAR(30) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE roles (
     id INT NOT NULL AUTO_INCREMENT,
-    title VARCHAR(30) NOT NULL,
-    department_id INT NOT NULL,
+    title VARCHAR(30) NOT NULL UNIQUE,
+    dept_name VARCHAR(30) NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (department_id) REFERENCES departments(id)
+    FOREIGN KEY (dept_name) REFERENCES departments(department_name)
 );
 
 CREATE TABLE employees (
     id INT NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    role_id INT NOT NULL,
+    role_name VARCHAR(30) NOT NULL,  
+    manager INT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (role_name) REFERENCES roles(title),
+    FOREIGN KEY (manager) REFERENCES employees(id)
 );
