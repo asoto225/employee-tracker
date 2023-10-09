@@ -11,6 +11,21 @@ const db = mysql.createConnection(
     },
     console.log('Connected to the company_db database.')
 );
+
+// const employeeNamesUpdated = [];
+
+let employeeUpdates = [];
+
+const sqlAgain = `SELECT first_name, last_name FROM employees`;
+db.query(sqlAgain, (err, rows) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  employeeUpdates = rows.map(row => `${row.first_name} ${row.last_name}`);
+
+});
+
 function getDepartments() {
   console.log('departments');
     const sql = `SELECT * FROM departments`;
@@ -19,7 +34,10 @@ function getDepartments() {
             console.log(err);
             return;
         }
+        console.log('\n');
         console.table(rows);
+        console.log('\n');
+        return mainMenu();
     });
 }
 
@@ -31,7 +49,10 @@ function getRoles() {
       console.log(err);
       return;
     }
+    console.log('\n');
     console.table(rows);
+    console.log('\n');
+    return mainMenu();
   });
 }
 
@@ -43,7 +64,10 @@ function getEmployees() {
       console.log(err);
       return;
     }
+    console.log('\n');
     console.table(rows);
+    console.log('\n');
+    return mainMenu();
   });
 }
 
@@ -65,6 +89,7 @@ function addDepartment() {
       }
       // console.table(rows);
       console.log('Department added');
+      return mainMenu();
     });
   });
 }
@@ -99,11 +124,14 @@ function addRole() {
       }
       // console.table(rows);
       console.log('Role added');
+      return mainMenu();
     });
   });
 }
 
 function addEmployee() {
+  const employeeNames = [{name: 'John Doe', value: 1}, {name: 'Mike Chan', value: 2}, {name: 'Ashley Rodriguez', value: 3}, {name: 'Kevin Tupik', value: 4},
+    {name: 'Malia Brown', value: 5}, {name: 'Sarah Lourd', value: 6}, {name: 'Tom Allen', value: 7}, {name: 'Michael Scott', value: 8}];
   const questionListTwo = [
     {
       type: 'input',
@@ -138,7 +166,7 @@ function addEmployee() {
       type: 'list',
       name: 'manager',
       message: 'Who is the manager of the new employee?',
-      choices: ['John Doe', 'Mike Chan', 'Ashley Rodriguez', 'Kevin Tupik', 'Malia Brown', 'Sarah Lourd', 'Tom Allen', 'Michael Scott'],
+      choices: employeeNames
     }
   ]
   inquirer.prompt(questionListTwo)
@@ -152,17 +180,46 @@ function addEmployee() {
         }
         // console.table(rows);
          console.log('Employee added');
+         return mainMenu();
       });
   });
 };
-    
 
 
-inquirer.prompt(questions).then((answers) => {
-    console.log(answers.text);
-    // if(answers.text === 'View all Departments') {
-    //   getDepartments();
-    // }
+
+function updateEmployeeRole() {
+  const questionListThree = [
+    {
+      type: 'list',
+      name: 'employee_name',
+      message: 'Which employee do you want to update?',
+      choices: employeeUpdates
+    },
+    {
+      type: 'list',
+      name: 'new_role',
+      message: 'What is the new role of the employee?',
+      choices: ['Sales Lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer']
+    }
+  ]
+  inquirer.prompt(questionListThree)
+    .then((answers) => {
+      console.log(answers.employee_name, answers.new_role);
+      const sql = `UPDATE employees SET role_name = "${answers.new_role}" WHERE first_name = "${answers.employee_name}"`
+      db.query(sql, (err, rows) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        // console.table(rows);
+        console.log('Employee role updated');
+        return mainMenu();
+      });
+  });
+};
+function mainMenu() {
+  inquirer.prompt(questions).then((answers) => {
+      console.log(answers.text);
     switch(answers.text) {
       case 'View all Departments':
         getDepartments();
@@ -170,8 +227,6 @@ inquirer.prompt(questions).then((answers) => {
       case 'View all Roles':
         getRoles();
         break;
-        default:
-          console.log('invalid choice');
       case 'View all Employees':
         getEmployees();
         break;
@@ -184,8 +239,21 @@ inquirer.prompt(questions).then((answers) => {
       case 'Add Employee':
         addEmployee();
         break
-    }
+      case 'Update Employee Role':
+        updateEmployeeRole();
+        break;
+      case 'Quit':
+        console.log('Goodbye!');
+        process.exit(0);
+    }})
+    .catch((error) => {
+      console.log('Its an error!', error);
+  
 });
+}
+
+mainMenu(); 
+
 
 // Get all departments
 // app.get('/api/departments', (req, res) => {
