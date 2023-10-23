@@ -4,10 +4,9 @@
 1. [Description](#description)
 2. [Installation](#installation)
 3. [Usage](#usage)
-4. [Contributing](#contributing)
-5. [Tests](#tests)
-6. [License](#license)
-7. [Questions](#questions)
+4. [License](#license)
+5. [Video](#video)
+6. [Questions](#questions)
 
 ## Description
 This project is aimed towards building a Node.js command line application to manage a company's employee database using Inquier and MySQL. Within the application, you are able to view, add, and update the company's departments, roles, and employees.
