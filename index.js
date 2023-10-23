@@ -15,6 +15,7 @@ const db = mysql.createConnection(
 // const employeeNamesUpdated = [];
 
 let employeeUpdates = [];
+let deptUpdates = [];
 
 const sqlAgain = `SELECT first_name, last_name FROM employees`;
 db.query(sqlAgain, (err, rows) => {
@@ -24,6 +25,15 @@ db.query(sqlAgain, (err, rows) => {
   }
   employeeUpdates = rows.map(row => `${row.first_name} ${row.last_name}`);
 
+});
+
+const deptSql = `SELECT department_name FROM departments`;
+db.query(deptSql, (err, rows) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  deptUpdates = rows.map(row => `${row.department_name}`);
 });
 
 function getDepartments() {
@@ -163,6 +173,17 @@ function addEmployee() {
       when: (answers) => !answers.choose_role
     },
     {
+      type: 'input',
+      name: 'salary',
+      message: 'What is the salary of the new employee?'
+    },
+    {
+      type: 'list',
+      name: 'department',
+      message: 'Which department does the new employee belong to?',
+      choices: deptUpdates
+    },
+    {
       type: 'list',
       name: 'manager',
       message: 'Who is the manager of the new employee?',
@@ -171,8 +192,8 @@ function addEmployee() {
   ]
   inquirer.prompt(questionListTwo)
     .then((answers) => {
-      console.log(answers.first_name, answers.last_name, answers.role_name, answers.manager);
-      const sql = `INSERT INTO employees (first_name, last_name, role_name, manager) VALUES ("${answers.first_name}", "${answers.last_name}", "${answers.role_name}", "${answers.manager}")`
+      console.log(answers.first_name, answers.last_name, answers.role_name, answers.salary, answers.department, answers.manager);
+      const sql = `INSERT INTO employees (first_name, last_name, role_name, salary, department, manager) VALUES ("${answers.first_name}", "${answers.last_name}", "${answers.role_name}", "${answers.salary}", "${answers.department}", "${answers.manager}")`
       db.query(sql, (err, rows) => {
         if (err) {
           console.log(err);

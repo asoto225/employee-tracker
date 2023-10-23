@@ -14,17 +14,24 @@ CREATE TABLE roles (
     title VARCHAR(30) NOT NULL UNIQUE,
     dept_name VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id, salary),
     FOREIGN KEY (dept_name) REFERENCES departments(department_name)
 );
+
+ALTER TABLE roles
+ADD INDEX salary_idx (salary);
 
 CREATE TABLE employees (
     id INT NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    role_name VARCHAR(30) NOT NULL,  
+    role_name VARCHAR(30) NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
+    department VARCHAR(30) NOT NULL,  
     manager INT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (role_name) REFERENCES roles(title),
-    FOREIGN KEY (manager) REFERENCES employees(id)
+    FOREIGN KEY (manager) REFERENCES employees(id),
+    FOREIGN KEY (salary) REFERENCES roles(salary),
+    FOREIGN KEY (department) REFERENCES departments(department_name)
 );
