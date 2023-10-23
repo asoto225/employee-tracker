@@ -16,6 +16,7 @@ const db = mysql.createConnection(
 
 let employeeUpdates = [];
 let deptUpdates = [];
+let roleUpdates = [];
 
 const sqlAgain = `SELECT first_name, last_name FROM employees`;
 db.query(sqlAgain, (err, rows) => {
@@ -34,6 +35,15 @@ db.query(deptSql, (err, rows) => {
     return;
   }
   deptUpdates = rows.map(row => `${row.department_name}`);
+});
+
+const roleSql = `SELECT title FROM roles`;
+db.query(roleSql, (err, rows) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  roleUpdates = rows.map(row => `${row.title}`);
 });
 
 function getDepartments() {
@@ -163,7 +173,7 @@ function addEmployee() {
       type: 'list',
       name: 'role_name',
       message: 'Which role does the new employee belong to?',
-      choices: ['Sales Lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer'],
+      choices: roleUpdates,
       when: (answers) => answers.choose_role
     },
     {
@@ -220,13 +230,13 @@ function updateEmployeeRole() {
       type: 'list',
       name: 'new_role',
       message: 'What is the new role of the employee?',
-      choices: ['Sales Lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer']
+      choices: roleUpdates
     }
   ]
   inquirer.prompt(questionListThree)
     .then((answers) => {
       console.log(answers.employee_name, answers.new_role);
-      const sql = `UPDATE employees SET role_name = "${answers.new_role}" WHERE first_name = "${answers.employee_name}"`
+      const sql = `UPDATE employees SET role_name = "${answers.new_role}" WHERE first_name = "${answers.employee_name.split(' ')[0]}" AND last_name = "${answers.employee_name.split(' ')[1]}"`
       db.query(sql, (err, rows) => {
         if (err) {
           console.log(err);
