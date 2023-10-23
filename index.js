@@ -130,7 +130,7 @@ function addRole() {
       type: 'list',
       name: 'dept_name',
       message: 'Which department does the new role belong to?',
-      choices: ['Sales', 'Engineering', 'Finance', 'Legal']
+      choices: deptUpdates
     }
   ]
   inquirer.prompt(questionList)
@@ -284,75 +284,3 @@ function mainMenu() {
 }
 
 mainMenu(); 
-
-
-// Get all departments
-// app.get('/api/departments', (req, res) => {
-//     const sql = `SELECT * FROM departments`;
-  
-//     db.query(sql, (err, rows) => {
-//       if (err) {
-//         res.status(500).json({ error: err.message });
-//         return;
-//       }
-//       res.json({
-//         message: 'success',
-//         data: rows
-//       });
-//     });
-// });
-
-// // Get all roles
-// app.get('/api/roles', (req, res) => {
-//     const sql = `SELECT * FROM roles`;
-  
-//     db.query(sql, (err, rows) => {
-//       if (err) {
-//         res.status(500).json({ error: err.message });
-//         return;
-//       }
-//       res.json({
-//         message: 'success',
-//         data: rows
-//       });
-//     });
-// });
-
-// // Get all employees
-// app.get('/api/employees', (req, res) => {
-//     const sql = `SELECT * FROM employees`;
-  
-//     db.query(sql, (err, rows) => {
-//       if (err) {
-//         res.status(500).json({ error: err.message });
-//         return;
-//       }
-//       res.json({
-//         message: 'success',
-//         data: rows
-//       });
-//     });
-// });
-
-// // update employee role
-// app.put('/api/employees/:id', (req, res) => {
-//     const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
-//     const params = [req.body.role_id, req.params.id];
-  
-//     db.query(sql, params, (err, result) => {
-//       if (err) {
-//         res.statusMessage(400).json({ error: err.message });
-//       } else if (!result.affectedRows) {
-//         res.json({
-//           message: 'Employee not found'
-//         });
-//       } else {
-//         res.json({
-//           message: 'success',
-//           data: req.body,
-//           changes: result.affectedRows
-//         });
-//       }
-//     });
-// }); 
-
